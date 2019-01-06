@@ -35,7 +35,7 @@ exports.signup = async (req, res) => {
       if (err) {
          return res.status(500).json(err.message);
       }
-      res.json(user);
+      res.json(user.name);
    });
 };
 
@@ -62,9 +62,9 @@ exports.signout = (req, res) => {
    res.json({ message: "You are now signed out!" });
 };
 
-exports.checkAuth = () => {
+exports.checkAuth = (req, res, next) => {
    if (req.isAuthenticated()) {
       return next();
-    }
-    res.redirect("/signin");
+   }
+   res.redirect("/signin");
 };
