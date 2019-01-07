@@ -57,10 +57,26 @@ exports.deleteUser = async (req, res) => {
    res.json(deleteUser);
 };
 
-exports.addFollowing = () => {};
+exports.addFollowing = async (req, res, next) => {
+   const { followId } = req.body;
+   await User.findByIdAndUpdate({ _id: req.user._id }, { $push: { following: followId } });
+   next();
+};
 
-exports.addFollower = () => {};
+exports.addFollower = async (req, res) => {
+   const { followId } = req.body;
+   const user = await User.findByIdAndUpdate({ _id: followId }, { $push: { followers: req.user._id } }, { new: true });
+   res.json({ user });
+};
 
-exports.deleteFollowing = () => {};
+exports.deleteFollowing = async (req, res, next) => {
+   const { followId } = req.body;
+   await User.findByIdAndUpdate({ _id: req.user._id }, { $pull: { following: followId } });
+   next();
+};
 
-exports.deleteFollower = () => {};
+exports.deleteFollower = async (req, res) => {
+   const { followId } = req.body;
+   const user = await User.findByIdAndUpdate({ _id: followId }, { $pull: { followers: req.user._id } }, { new: true });
+   res.json({ user });
+};
